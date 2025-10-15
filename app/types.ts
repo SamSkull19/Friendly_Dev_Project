@@ -8,3 +8,11 @@ export type Project = {
     category: string;
     featured: boolean;
 };
+
+export type PostData = {
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string;
+  date: string;
+};
