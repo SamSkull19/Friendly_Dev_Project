@@ -9,6 +9,25 @@ export async function action({ request }: Route.ActionArgs) {
     const subject = formData.get('subject') as string;
     const message = formData.get('message') as string;
 
+    const errors: Record<string, string> = {}
+
+    // Error Set
+    if (!name) errors.name = 'Name is Required.';
+
+    if (!email) {
+        errors.email = 'Email is Required.';
+    }
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        errors.email = 'Invalid Email format.';
+    }
+
+    if (!subject) errors.subject = 'Subject is Required.';
+    if (!message) errors.message = 'Message is Required.';
+
+    if (Object.keys(errors).length > 0) {
+        return { errors };
+    }
+
     const data = {
         name, email, subject, message,
     };
@@ -17,6 +36,8 @@ export async function action({ request }: Route.ActionArgs) {
 }
 
 const ContactPage = ({ actionData }: Route.ComponentProps) => {
+    const errors = actionData?.errors || {};
+
     return (
         <section className='max-w-3xl mx-auto mt-12 px-6 py-8 bg-gray-900'>
             <h2 className='text-3xl font-bold text-white mb-8 text-center'>
@@ -48,6 +69,9 @@ const ContactPage = ({ actionData }: Route.ComponentProps) => {
                         className='w-full mt-1 px-4 py-2 border border-gray-700 rounded-lg bg-gray-800 text-gray-100'
                     />
                 </div>
+                {
+                    errors.name && (<p className='text-red-400 text-sm mt-1'>{errors.name}</p>)
+                }
 
                 {/* Email */}
                 <div>
@@ -65,6 +89,9 @@ const ContactPage = ({ actionData }: Route.ComponentProps) => {
                         className='w-full mt-1 px-4 py-2 border border-gray-700 rounded-lg bg-gray-800 text-gray-100'
                     />
                 </div>
+                {
+                    errors.email && (<p className='text-red-400 text-sm mt-1'>{errors.email}</p>)
+                }
 
                 {/* Subject */}
                 <div>
@@ -82,6 +109,9 @@ const ContactPage = ({ actionData }: Route.ComponentProps) => {
                         className='w-full mt-1 px-4 py-2 border border-gray-700 rounded-lg bg-gray-800 text-gray-100'
                     />
                 </div>
+                {
+                    errors.subject && (<p className='text-red-400 text-sm mt-1'>{errors.subject}</p>)
+                }
 
                 {/* Message */}
                 <div>
@@ -99,6 +129,9 @@ const ContactPage = ({ actionData }: Route.ComponentProps) => {
                         className='w-full mt-1 px-4 py-2 border border-gray-700 rounded-lg bg-gray-800 text-gray-100'
                     />
                 </div>
+                {
+                    errors.message && (<p className='text-red-400 text-sm mt-1'>{errors.message}</p>)
+                }
 
                 {/* Submit Button */}
                 <button
