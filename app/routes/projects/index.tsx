@@ -18,18 +18,43 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const projectsPerPage = 2;
 
-  const totalPage = Math.ceil(projects.length / projectsPerPage);
+  const [selectedQuery, setSelectedQuery] = useState("All");
+  const categories = [
+    'All',
+    ...new Set(projects.map((project) => project.category)),
+  ]
+
+  const filteredProject = selectedQuery === 'All' ? projects : projects.filter(project => project.category === selectedQuery);
+
+  const totalPage = Math.ceil(filteredProject.length / projectsPerPage);
 
   const indexOfLast = currentPage * projectsPerPage;
   const indexOfFirst = indexOfLast - projectsPerPage;
-  const currentProjects = projects.slice(indexOfFirst, indexOfLast);
-
+  const currentProjects = filteredProject.slice(indexOfFirst, indexOfLast);
 
   return (
     <>
       <h2 className='text-3xl font-bold mb-8 text-white'>
         🚀 Projects
       </h2>
+
+      <div className='flex flex-wrap gap-2 mb-8'>
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            onClick={() => {
+              setSelectedQuery(cat);
+              setCurrentPage(1);
+            }}
+            className={`px-3 py-1 rounded text-sm ${selectedQuery === cat
+                ? 'bg-blue-600 text-white'
+                : 'bg-gray-700 text-gray-200'
+              }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
 
       <div className='grid gap-6 sm:grid-cols-2'>
         {currentProjects.map((project) => (
