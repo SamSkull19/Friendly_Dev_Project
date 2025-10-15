@@ -12,6 +12,10 @@ export async function loader({ request }: Route.LoaderArgs): Promise<{ posts: Po
     }
 
     const data = await res.json();
+
+    data.sort((a:PostData, b:PostData) => {
+        return new Date(b.date).getTime() - new Date(a.date).getTime();
+    })
     return { posts: data };
 }
 
