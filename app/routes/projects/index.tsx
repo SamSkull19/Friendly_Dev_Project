@@ -3,6 +3,7 @@ import type { Route } from './+types/index';
 import type { Project } from '~/types';
 import { useState } from 'react';
 import Pagination from '~/components/Pagination';
+import { AnimatePresence, motion } from 'framer-motion';
 
 export async function loader({ request }: Route.LoaderArgs): Promise<{ projects: Project[] }> {
   const res = await fetch('http://localhost:8000/projects');
@@ -47,8 +48,8 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
               setCurrentPage(1);
             }}
             className={`px-3 py-1 rounded text-sm ${selectedQuery === cat
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-700 text-gray-200'
+              ? 'bg-blue-600 text-white'
+              : 'bg-gray-700 text-gray-200'
               }`}
           >
             {cat}
@@ -56,11 +57,16 @@ const ProjectsPage = ({ loaderData }: Route.ComponentProps) => {
         ))}
       </div>
 
-      <div className='grid gap-6 sm:grid-cols-2'>
-        {currentProjects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
-      </div>
+      <AnimatePresence mode='wait'>
+        <motion.div layout className='grid gap-6 sm:grid-cols-2'>
+          {currentProjects.map((project) => (
+            <motion.div layout key={project.id}>
+              <ProjectCard project={project} />
+            </motion.div>
+          ))}
+        </motion.div>
+      </AnimatePresence>
+
 
       <Pagination
         totalPages={totalPage}
