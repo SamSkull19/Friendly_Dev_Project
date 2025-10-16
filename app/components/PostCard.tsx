@@ -10,6 +10,14 @@ const PostCard = ({ post }: { post: PostData }) => {
                 {new Date(post.date).toLocaleDateString()}
             </p>
 
+            {post.image && (
+                <img
+                    src={post.image}
+                    alt={post.title}
+                    className='w-full h-48 object-cover rounded mb-4'
+                />
+            )}
+
             <p className='text-gray-300 mb-4'>{post.excerpt}</p>
 
             <Link
